@@ -27,20 +27,7 @@ st.markdown("<center>Washington DC, USA</center>", unsafe_allow_html=True)
 
 st.markdown("### <span style='color:#1E1C63'>Challenges of Trustworthy AI in Distribution Shifts and Algorithmic Fairness 2024</span>", unsafe_allow_html=True)
 
-import os
-current_path = os.getcwd()
-print(f"当前路径: {current_path}")
-
-# 获取当前路径下的所有文件和文件夹
-items = os.listdir(current_path)
-
-# 筛选并打印所有文件夹
-print("当前路径下的文件夹:")
-for item in items:
-    if os.path.isdir(os.path.join(current_path, item)):
-        print(item)
-
-conn = st.connection('bigdatacup', type='sql')
+conn = st.connection('/mount/src/bigdatacup/bigdatacup.db', type='sql')
 
 
 st.markdown("#### Leaderboard")
