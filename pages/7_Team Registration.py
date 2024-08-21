@@ -106,7 +106,7 @@ if st.button('Register'):
                                 
                                 try:
                                     # 插入数据
-                                    new_id = team_num + 1
+                                    new_id = team_num.iloc[0, 0] + 1
                                     insert_stmt = text(f"""
                                         INSERT INTO teamsForCup (id, team_id, leader_name, leader_email, leader_affiliation, team_name, 
                                                                  other_members_num, other_members_name, other_members_email, other_members_affiliation) 
