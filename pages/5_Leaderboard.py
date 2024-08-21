@@ -104,55 +104,57 @@ df_final_rank['Ranking'] = df_final_rank['Weighted Rank'].rank(ascending=True)
 st.markdown("###### Task 2 Ranking")
 st.dataframe(df_final_rank, hide_index=True, column_order=("Ranking", "Team Name",'DP','DP Rank','Accuracy','Accuracy Rank','Weighted Rank'))
 
-st.markdown("##### Stage 2")
+# st.markdown("##### Stage 2")
+
+# st.markdown("###### Task 1 Ranking")
+
+# with engine.connect() as connection:
+#     # leaderboard_df_stage_1 = conn.query(f"select * from leaderboard where stage=2;", ttl=2)
+#     leaderboard_df_stage_1 = connection.execute(text(f"select * from leaderboard where stage=2;"))
+#     leaderboard_df_stage_1 = pd.DataFrame(leaderboard_df_stage_1.fetchall(), columns=leaderboard_df_stage_1.keys())
+# leaderboard_df_stage_1 = leaderboard_df_stage_1.drop(columns=['team_id'])
+# df1 = leaderboard_df_stage_1.iloc[:, [0, 1]]
+# df1 = df1.rename(columns={
+#     'team_name': 'Team Name',
+#     'task1_accuracy': 'Accuracy',
+# })
+# df1['Ranking'] = df1['Accuracy'].rank(ascending=False)
+# df1 = df1.sort_values(by='Ranking')
+# df1 = df1.reset_index(drop=True)
+# st.dataframe(df1, hide_index=True, column_order=("Ranking", "Team Name",'Accuracy'))
+
+# # 得到task2最终排名
+# df_sorted_accuracy = leaderboard_df_stage_1.sort_values(by='task2_accuracy', ascending=False).reset_index(drop=True)
+# df_sorted_accuracy['accuracy_rank'] = df_sorted_accuracy.index + 1
+
+# df_sorted_dp = leaderboard_df_stage_1.sort_values(by='task2_dp').reset_index(drop=True)
+# df_sorted_dp['dp_rank'] = df_sorted_dp.index + 1
+
+# df_merged = pd.merge(df_sorted_accuracy, df_sorted_dp, on=['team_name', 'task1_accuracy', 'task2_accuracy', 'task2_dp'])
+# df_merged['weighted_rank'] = (0.3 * df_merged['accuracy_rank']) + (0.7 * df_merged['dp_rank'])
+# df_merged = df_merged.drop(columns=['task1_accuracy'])
+# df_final_rank = df_merged.sort_values(by='weighted_rank').reset_index(drop=True)
+# df_final_rank = df_final_rank.rename(columns={
+#     'team_name': 'Team Name',
+#     'task2_accuracy': 'Accuracy',
+#     'task2_dp': 'DP',
+#     'accuracy_rank': 'Accuracy Rank',
+#     'dp_rank':  'DP Rank',
+#     'weighted_rank': 'Weighted Rank'
+# })
+# df_final_rank['Ranking'] = df_final_rank['Weighted Rank'].rank(ascending=True)
+
+# st.markdown("###### Task 2 Ranking")
+# st.dataframe(df_final_rank, hide_index=True, column_order=("Ranking", "Team Name",'DP','DP Rank','Accuracy','Accuracy Rank','Weighted Rank'))
+
+st.markdown("##### Stage 2 (Final stage)")
 
 st.markdown("###### Task 1 Ranking")
 
 with engine.connect() as connection:
     # leaderboard_df_stage_1 = conn.query(f"select * from leaderboard where stage=2;", ttl=2)
-    leaderboard_df_stage_1 = connection.execute(f"select * from leaderboard where stage=2;")
-leaderboard_df_stage_1 = leaderboard_df_stage_1.drop(columns=['team_id'])
-df1 = leaderboard_df_stage_1.iloc[:, [0, 1]]
-df1 = df1.rename(columns={
-    'team_name': 'Team Name',
-    'task1_accuracy': 'Accuracy',
-})
-df1['Ranking'] = df1['Accuracy'].rank(ascending=False)
-df1 = df1.sort_values(by='Ranking')
-df1 = df1.reset_index(drop=True)
-st.dataframe(df1, hide_index=True, column_order=("Ranking", "Team Name",'Accuracy'))
-
-# 得到task2最终排名
-df_sorted_accuracy = leaderboard_df_stage_1.sort_values(by='task2_accuracy', ascending=False).reset_index(drop=True)
-df_sorted_accuracy['accuracy_rank'] = df_sorted_accuracy.index + 1
-
-df_sorted_dp = leaderboard_df_stage_1.sort_values(by='task2_dp').reset_index(drop=True)
-df_sorted_dp['dp_rank'] = df_sorted_dp.index + 1
-
-df_merged = pd.merge(df_sorted_accuracy, df_sorted_dp, on=['team_name', 'task1_accuracy', 'task2_accuracy', 'task2_dp'])
-df_merged['weighted_rank'] = (0.3 * df_merged['accuracy_rank']) + (0.7 * df_merged['dp_rank'])
-df_merged = df_merged.drop(columns=['task1_accuracy'])
-df_final_rank = df_merged.sort_values(by='weighted_rank').reset_index(drop=True)
-df_final_rank = df_final_rank.rename(columns={
-    'team_name': 'Team Name',
-    'task2_accuracy': 'Accuracy',
-    'task2_dp': 'DP',
-    'accuracy_rank': 'Accuracy Rank',
-    'dp_rank':  'DP Rank',
-    'weighted_rank': 'Weighted Rank'
-})
-df_final_rank['Ranking'] = df_final_rank['Weighted Rank'].rank(ascending=True)
-
-st.markdown("###### Task 2 Ranking")
-st.dataframe(df_final_rank, hide_index=True, column_order=("Ranking", "Team Name",'DP','DP Rank','Accuracy','Accuracy Rank','Weighted Rank'))
-
-st.markdown("##### Stage 3 (Final stage)")
-
-st.markdown("###### Task 1 Ranking")
-
-with engine.connect() as connection:
-    # leaderboard_df_stage_1 = conn.query(f"select * from leaderboard where stage=3;", ttl=2)
-    leaderboard_df_stage_1 = connection.execute(f"select * from leaderboard where stage=3;")
+    leaderboard_df_stage_1 = connection.execute(text(f"select * from leaderboard where stage=2;"))
+    leaderboard_df_stage_1 = pd.DataFrame(leaderboard_df_stage_1.fetchall(), columns=leaderboard_df_stage_1.keys())
 leaderboard_df_stage_1 = leaderboard_df_stage_1.drop(columns=['team_id'])
 df1 = leaderboard_df_stage_1.iloc[:, [0, 1]]
 df1 = df1.rename(columns={
