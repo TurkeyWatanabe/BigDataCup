@@ -21,7 +21,7 @@ st.write(r'''<style>
 
 
 
-st.markdown("<center style='font-size:1.5rem'><b>IEEE Big Data 2024111</b></center>", unsafe_allow_html=True)
+st.markdown("<center style='font-size:1.5rem'><b>IEEE Big Data 2024</b></center>", unsafe_allow_html=True)
 st.markdown("<center>Washington DC, USA</center>", unsafe_allow_html=True)
 
 st.markdown("### <span style='color:#1E1C63'>Challenges of Trustworthy AI in Distribution Shifts and Algorithmic Fairness 2024</span>", unsafe_allow_html=True)
