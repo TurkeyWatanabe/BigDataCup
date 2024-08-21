@@ -1,7 +1,10 @@
 import streamlit as st
 import sqlalchemy.exc
-from sqlalchemy.sql import text
+# from sqlalchemy.sql import text
 from utils import generate_random_string, is_valid_email
+from sqlalchemy import create_engine, text
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.exc import SQLAlchemyError
 
 
 st.write(r'''<style>
@@ -46,17 +49,25 @@ st.markdown("*Note that the information of other team members should correspond 
 
 
 if st.button('Register'):
-    conn = st.connection('bigdatacupdb', type='sql')
+    # conn = st.connection('bigdatacupdb', type='sql')
+    engine = create_engine('sqlite:////mount/src/bigdatacup/bigdatacup.db')
     val_flag = 1
     # 判断必填项
     if len(leader_name) != 0 and len(leader_email) != 0 and len(leader_affiliation) != 0 and len(team_name) != 0:
         # 判断邮箱格式是否正确
         if is_valid_email(leader_email):
             # 判断队长是否已经注册过team
-            is_reg = conn.query(f"select count(*) from teamsForCup where leader_name='{leader_name}' and leader_email='{leader_email}';",ttl=2)
+            with engine.connect() as connection:
+                # is_reg = conn.query(f"select count(*) from teamsForCup where leader_name='{leader_name}' and leader_email='{leader_email}';",ttl=2)
+                is_reg = connection.execute(text(f"select count(*) from teamsForCup where leader_name='{leader_name}' and leader_email='{leader_email}';"))
+                is_reg = pd.DataFrame(is_reg.fetchall(), columns=is_reg.keys())
             if is_reg.iloc[0, 0] == 0:
                 # 判断队伍名是否已被注册
                 team_name_df = conn.query(f"select team_name from teamsForCup;",ttl=2)
+                with engine.connect() as connection:
+                    # team_name_df = conn.query(f"select team_name from teamsForCup;",ttl=2)
+                    team_name_df = connection.execute(text(f"select team_name from teamsForCup;"))
+                    team_name_df = pd.DataFrame(team_name_df.fetchall(), team_name_df=is_reg.keys())
                 team_name_list = team_name_df['team_name'].to_list()
                 # st.write(team_name_list)
                 if team_name not in team_name_list:
@@ -83,28 +94,73 @@ if st.button('Register'):
                                 # 通过验证，队伍注册成功，生成队伍id并入库
                                 team_id = generate_random_string()
                                 
-                                team_num = conn.query('select count(*) from teamsForCup;',ttl=2)
+                                
+                                with engine.connect() as connection:
+                                    # team_num = conn.query('select count(*) from teamsForCup;',ttl=2)
+                                    team_num = connection.execute(text(f"select count(*) from teamsForCup;"))
+                                    team_num = pd.DataFrame(team_num.fetchall(), team_num=is_reg.keys())
+                                    
+                                Session = sessionmaker(bind=engine)
+                                session = Session()
+                                
                                 try:
-                                    with conn.session as s:
-                                        try:
-                                            s.execute(
-                                                text(f"""INSERT INTO teamsForCup (id, team_id, leader_name, leader_email, leader_affiliation, team_name, 
-                                                other_members_num, other_members_name, other_members_email, other_members_affiliation) 
-                                                VALUES ({team_num.iloc[0, 0]+1},'{team_id}','{leader_name}','{leader_email}','{leader_affiliation}','{team_name}',
-                                                {other_members_num},'{members_name}','{members_email}','{members_affiliation}');""")
-                                            )
-                                            s.commit()
-
-                                            st.success(f'Registration successful, your team ID is {team_id}. Do not disclose your team ID to others!', icon="✅")
-                                            conn = st.connection('bigdatacupdb', type='sql')
-                                        except sqlalchemy.exc.SQLAlchemyError as e:
-                                            # 在捕获到 SQLAlchemy 异常时进行回滚
-                                            st.error(f'Dataset error: {e}.', icon="🚨")
-                                            s.rollback()
-
-                                except Exception as e:
-                                    # 在捕获到其他异常时进行处理
+                                    # 插入数据
+                                    new_id = team_num + 1
+                                    insert_stmt = text(f"""
+                                        INSERT INTO teamsForCup (id, team_id, leader_name, leader_email, leader_affiliation, team_name, 
+                                                                 other_members_num, other_members_name, other_members_email, other_members_affiliation) 
+                                        VALUES (:id, :team_id, :leader_name, :leader_email, :leader_affiliation, :team_name,
+                                                :other_members_num, :other_members_name, :other_members_email, :other_members_affiliation)
+                                    """)
+                                    session.execute(insert_stmt, {
+                                        'id': new_id,
+                                        'team_id': team_id,
+                                        'leader_name': leader_name,
+                                        'leader_email': leader_email,
+                                        'leader_affiliation': leader_affiliation,
+                                        'team_name': team_name,
+                                        'other_members_num': other_members_num,
+                                        'other_members_name': members_name,
+                                        'other_members_email': members_email,
+                                        'other_members_affiliation': members_affiliation
+                                    })
+                                
+                                    # 提交事务
+                                    session.commit()
+                                
+                                    st.success(f'Registration successful, your team ID is {team_id}. Do not disclose your team ID to others!', icon="✅")
+                                except SQLAlchemyError as e:
+                                    # 捕获到 SQLAlchemy 异常时进行回滚
                                     st.error(f'Dataset error: {e}.', icon="🚨")
+                                    session.rollback()
+                                except Exception as e:
+                                    # 捕获到其他异常时进行处理
+                                    st.error(f'Dataset error: {e}.', icon="🚨")
+                                finally:
+                                    # 关闭会话
+                                    session.close()
+                                # try:
+                                #     with conn.session as s:
+                                #         try:
+                                #             s.execute(
+                                #                 text(f"""INSERT INTO teamsForCup (id, team_id, leader_name, leader_email, leader_affiliation, team_name, 
+                                #                 other_members_num, other_members_name, other_members_email, other_members_affiliation) 
+                                #                 VALUES ({team_num.iloc[0, 0]+1},'{team_id}','{leader_name}','{leader_email}','{leader_affiliation}','{team_name}',
+                                #                 {other_members_num},'{members_name}','{members_email}','{members_affiliation}');""")
+                                #             )
+                                #             s.commit()
+
+                                #             st.success(f'Registration successful, your team ID is {team_id}. Do not disclose your team ID to others!', icon="✅")
+                                #             conn = st.connection('bigdatacupdb', type='sql')
+                                #         except sqlalchemy.exc.SQLAlchemyError as e:
+                                #             # 在捕获到 SQLAlchemy 异常时进行回滚
+                                #             st.error(f'Dataset error: {e}.', icon="🚨")
+                                #             s.rollback()
+
+                                # except Exception as e:
+                                #     # 在捕获到其他异常时进行处理
+                                #     st.error(f'Dataset error: {e}.', icon="🚨")
+                            
                             else:
                                 st.error('Registration failed: incorrect member email format.', icon="🚨")
                         else:
