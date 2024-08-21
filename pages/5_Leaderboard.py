@@ -27,9 +27,9 @@ st.markdown("<center>Washington DC, USA</center>", unsafe_allow_html=True)
 
 st.markdown("### <span style='color:#1E1C63'>Challenges of Trustworthy AI in Distribution Shifts and Algorithmic Fairness 2024</span>", unsafe_allow_html=True)
 
+engine = create_engine('sqlite:///path/to/yourdatabase.db')
 
-st.secrets.connections.bigdatacupdb.database == "bigdatacup.db"
-conn = st.connection('bigdatacupdb', type='sql')
+# conn = st.connection('bigdatacupdb', type='sql')
 
 
 st.markdown("#### Leaderboard")
@@ -38,7 +38,9 @@ st.markdown("##### Stage 1")
 
 st.markdown("###### Task 1 Ranking")
 
-leaderboard_df_stage_1 = conn.query(f"select * from leaderboard where stage=1;", ttl=2)
+with engine.connect() as connection:
+    # leaderboard_df_stage_1 = conn.query(f"select * from leaderboard where stage=1;", ttl=2)
+    leaderboard_df_stage_1 = connection.execute(f"select * from leaderboard where stage=1;")
 leaderboard_df_stage_1 = leaderboard_df_stage_1.drop(columns=['team_id'])
 df1 = leaderboard_df_stage_1.iloc[:, [0, 1]]
 df1 = df1.rename(columns={
@@ -104,7 +106,9 @@ st.markdown("##### Stage 2")
 
 st.markdown("###### Task 1 Ranking")
 
-leaderboard_df_stage_1 = conn.query(f"select * from leaderboard where stage=2;", ttl=2)
+with engine.connect() as connection:
+    # leaderboard_df_stage_1 = conn.query(f"select * from leaderboard where stage=2;", ttl=2)
+    leaderboard_df_stage_1 = connection.execute(f"select * from leaderboard where stage=2;")
 leaderboard_df_stage_1 = leaderboard_df_stage_1.drop(columns=['team_id'])
 df1 = leaderboard_df_stage_1.iloc[:, [0, 1]]
 df1 = df1.rename(columns={
@@ -144,7 +148,9 @@ st.markdown("##### Stage 3 (Final stage)")
 
 st.markdown("###### Task 1 Ranking")
 
-leaderboard_df_stage_1 = conn.query(f"select * from leaderboard where stage=3;", ttl=2)
+with engine.connect() as connection:
+    # leaderboard_df_stage_1 = conn.query(f"select * from leaderboard where stage=3;", ttl=2)
+    leaderboard_df_stage_1 = connection.execute(f"select * from leaderboard where stage=3;")
 leaderboard_df_stage_1 = leaderboard_df_stage_1.drop(columns=['team_id'])
 df1 = leaderboard_df_stage_1.iloc[:, [0, 1]]
 df1 = df1.rename(columns={
