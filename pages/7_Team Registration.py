@@ -5,6 +5,7 @@ from utils import generate_random_string, is_valid_email
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.exc import SQLAlchemyError
+import pandas as pd
 
 
 st.write(r'''<style>
