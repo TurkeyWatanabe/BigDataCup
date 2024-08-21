@@ -2,6 +2,7 @@ import streamlit as st
 import os
 from utils import is_valid_team_id
 from sqlalchemy import create_engine, text
+import pandas as pd
 
 st.write(r'''<style>
     
