@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 
 st.write(r'''<style>
     
@@ -41,7 +41,7 @@ st.markdown("###### Task 1 Ranking")
 
 with engine.connect() as connection:
     # leaderboard_df_stage_1 = conn.query(f"select * from leaderboard where stage=1;", ttl=2)
-    leaderboard_df_stage_1 = connection.execute(f"select * from leaderboard where stage=1;")
+    leaderboard_df_stage_1 = connection.execute(text(f"select * from leaderboard where stage=1;"))
 leaderboard_df_stage_1 = leaderboard_df_stage_1.drop(columns=['team_id'])
 df1 = leaderboard_df_stage_1.iloc[:, [0, 1]]
 df1 = df1.rename(columns={
