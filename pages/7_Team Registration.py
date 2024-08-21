@@ -64,7 +64,7 @@ if st.button('Register'):
                 is_reg = pd.DataFrame(is_reg.fetchall(), columns=is_reg.keys())
             if is_reg.iloc[0, 0] == 0:
                 # 判断队伍名是否已被注册
-                team_name_df = conn.query(f"select team_name from teamsForCup;",ttl=2)
+                # team_name_df = conn.query(f"select team_name from teamsForCup;",ttl=2)
                 with engine.connect() as connection:
                     # team_name_df = conn.query(f"select team_name from teamsForCup;",ttl=2)
                     team_name_df = connection.execute(text(f"select team_name from teamsForCup;"))
