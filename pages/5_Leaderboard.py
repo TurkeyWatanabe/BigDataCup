@@ -27,7 +27,7 @@ st.markdown("<center>Washington DC, USA</center>", unsafe_allow_html=True)
 
 st.markdown("### <span style='color:#1E1C63'>Challenges of Trustworthy AI in Distribution Shifts and Algorithmic Fairness 2024</span>", unsafe_allow_html=True)
 
-engine = create_engine('sqlite:///path/to/yourdatabase.db')
+engine = create_engine('sqlite://bigdatacup.db')
 
 # conn = st.connection('bigdatacupdb', type='sql')
 
