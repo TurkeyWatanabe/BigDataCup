@@ -68,6 +68,7 @@ if st.button("Submit"):
                     team_id_df = pd.DataFrame(team_id_df.fetchall(), columns=team_id_df.keys())
                 
                 team_id_list = team_id_df['team_id'].to_list()
+                print(team_id_list)
                 if team_id in team_id_list:
                     with open(os.path.join(f"uploads/stage{stage}", uploaded_file.name), "wb") as f:
                         f.write(uploaded_file.getbuffer())
