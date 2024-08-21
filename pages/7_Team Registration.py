@@ -68,7 +68,7 @@ if st.button('Register'):
                 with engine.connect() as connection:
                     # team_name_df = conn.query(f"select team_name from teamsForCup;",ttl=2)
                     team_name_df = connection.execute(text(f"select team_name from teamsForCup;"))
-                    team_name_df = pd.DataFrame(team_name_df.fetchall(), team_name_df=is_reg.keys())
+                    team_name_df = pd.DataFrame(team_name_df.fetchall(), columns=team_name_df.keys())
                 team_name_list = team_name_df['team_name'].to_list()
                 # st.write(team_name_list)
                 if team_name not in team_name_list:
@@ -99,7 +99,7 @@ if st.button('Register'):
                                 with engine.connect() as connection:
                                     # team_num = conn.query('select count(*) from teamsForCup;',ttl=2)
                                     team_num = connection.execute(text(f"select count(*) from teamsForCup;"))
-                                    team_num = pd.DataFrame(team_num.fetchall(), team_num=is_reg.keys())
+                                    team_num = pd.DataFrame(team_num.fetchall(), columns=team_num.keys())
                                     
                                 Session = sessionmaker(bind=engine)
                                 session = Session()
