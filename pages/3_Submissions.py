@@ -1,6 +1,7 @@
 import streamlit as st
 import os
 from utils import is_valid_team_id
+from sqlalchemy import create_engine, text
 
 st.write(r'''<style>
     
@@ -58,8 +59,13 @@ if st.button("Submit"):
             # 检查是不是合法的team id格式
             if is_valid_team_id(team_id):
                 # 检查team id是否存在
-                conn = st.connection('bigdatacupdb', type='sql')
-                team_id_df = conn.query(f"select team_id from teamsForCup;",ttl=2)
+                # conn = st.connection('bigdatacupdb', type='sql')
+                engine = create_engine('sqlite:////mount/src/bigdatacup/bigdatacup.db')
+                with engine.connect() as connection:
+                    # team_id_df = conn.query(f"select team_id from teamsForCup;",ttl=2)
+                    team_id_df = connection.execute(text(f"select team_id from teamsForCup;"))
+                    team_id_df = pd.DataFrame(team_id_df.fetchall(), columns=team_id_df.keys())
+                
                 team_id_list = team_id_df['team_id'].to_list()
                 if team_id in team_id_list:
                     with open(os.path.join(f"uploads/stage{stage}", uploaded_file.name), "wb") as f:
