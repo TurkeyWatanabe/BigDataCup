@@ -3,8 +3,6 @@ import os
 from utils import is_valid_team_id
 from sqlalchemy import create_engine, text
 import pandas as pd
-import requests
-import base64
 
 st.write(r'''<style>
     
@@ -24,37 +22,6 @@ st.write(r'''<style>
     </style>
          
          ''', unsafe_allow_html=True)
-
-# 输入你的 GitHub 访问 token 和目标仓库信息
-GITHUB_TOKEN = "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"
-GITHUB_REPO = "TurkeyWatanabe/BigDataCup"
-GITHUB_BRANCH = "main"
-
-def upload_file_to_github(file, path_in_repo):
-    url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/{path_in_repo}"
-    
-    # 将文件编码为 base64 格式
-    content = base64.b64encode(file.read()).decode("utf-8")
-    
-    # 构造请求头和请求体
-    headers = {
-        "Authorization": f"token {GITHUB_TOKEN}",
-        "Accept": "application/vnd.github.v3+json"
-    }
-    data = {
-        "message": f"Add {path_in_repo}",
-        "content": content,
-        "branch": GITHUB_BRANCH
-    }
-    
-    # 发送 POST 请求到 GitHub API
-    response = requests.put(url, json=data, headers=headers)
-    
-    # 检查请求结果
-    if response.status_code == 201:
-        st.success(f"File '{path_in_repo}' uploaded successfully to GitHub.")
-    else:
-        st.error(f"Failed to upload file to GitHub. Error: {response.json()}")
 
 st.markdown("<center style='font-size:1.5rem'><b>IEEE Big Data 2024</b></center>", unsafe_allow_html=True)
 st.markdown("<center>Washington DC, USA</center>", unsafe_allow_html=True)
@@ -101,14 +68,8 @@ if st.button("Submit"):
                 team_id_list = team_id_df['team_id'].to_list()
                 st.success(team_id_list)
                 if team_id in team_id_list:
-                    # with open(os.path.join(f"uploads/stage{stage}", uploaded_file.name), "wb") as f:
-                    #     f.write(uploaded_file.getbuffer())
-                    if uploaded_file is not None:
-                        # 指定文件上传到仓库的路径
-                        path_in_repo = f"uploads/stage{stage}/{uploaded_file.name}"  # 例如上传到 'uploads' 目录下
-                        
-                        # 上传文件到 GitHub
-                        upload_file_to_github(uploaded_file, path_in_repo)
+                    with open(os.path.join(f"uploads/stage{stage}", uploaded_file.name), "wb") as f:
+                        f.write(uploaded_file.getbuffer())
                     st.success(f'Team {team_id} submitted successfully!', icon="✅")
                 else:
                     st.error(f'Team {team_id} not registered, please register first.', icon="🚨")
