@@ -49,7 +49,7 @@ members_affiliation = st.text_input("Other team members' affiliation. Please lis
 st.markdown("*Note that the information of other team members should correspond one-to-one.")
 
 
-if st.button('Register111'):
+if st.button('Register'):
     # conn = st.connection('bigdatacupdb', type='sql')
     engine = create_engine('sqlite:////mount/src/bigdatacup/bigdatacup.db')
     val_flag = 1
