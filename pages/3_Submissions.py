@@ -68,7 +68,7 @@ if st.button("Submit"):
                 team_id_list = team_id_df['team_id'].to_list()
                 st.success(team_id_list)
                 if team_id in team_id_list:
-                    with open(os.path.join(f"uploads/stage{stage}", uploaded_file.name), "wb") as f:
+                    with open(os.path.join(f"/mount/src/bigdatacup/uploads/stage{stage}", uploaded_file.name), "wb") as f:
                         f.write(uploaded_file.getbuffer())
                     st.success(f'Team {team_id} submitted successfully!', icon="✅")
                 else:
