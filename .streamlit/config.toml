@@ -1,0 +1,10 @@
+
+[theme]
+base="light"
+
+[client]
+hideThemeSelector = true
+
+[browser]
+gatherUsageStats = false
+
