@@ -30,7 +30,7 @@ st.markdown("### <span style='color:#1E1C63'>Challenges of Trustworthy AI in Dis
 
 st.markdown("#### Submission Rules")
 
-st.markdown("The submission will be divided into two stages, with specific timing detailed in the <a href='http://192.168.1.112:8501/Important_Dates' target='_self'>Important Dates</a>. Each team is allowed unlimited submissions in each stage. The final result for each stage will be based on the team's last submission, and interim results for each stage will be announced on <a href='http://192.168.1.112:8501/Leaderboard' target='_self'>Leaderboard</a> within one week after the deadline. The team's final score will be based on the results of the third stage."
+st.markdown("The submission will be divided into two stages, with specific timing detailed in the *Important Dates*. Each team is allowed unlimited submissions in each stage. The final result for each stage will be based on the team's last submission, and interim results for each stage will be announced on *Leaderboard* within one week after the deadline. The team's final score will be based on the results of the third stage."
             , unsafe_allow_html=True)
 
 # st.markdown("""
